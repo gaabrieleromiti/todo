@@ -3,47 +3,43 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 	"log"
-	"github.com/gaabrieleromiti/todo"
+	"os"
+
+	"github.com/gaabrieleromiti/todo/internal"
 )
 
 const (
 	fileName = "todo.json"
 )
 
+
 func main() {
-	add := flag.Bool("new",  false,"Create a new task")
+	add := flag.String("add",  "", "Create a new task")
 	list := flag.Bool("list", false, "List all tasks")
 	done := flag.Int("done", 0, "Mark task as done")
 	remove := flag.Int("remove", 0, "Remove task")
 
 	flag.Parse()
 
-	tasks := todo.TaskList{}
+	tasks := internal.TaskList{}
 
-	err := tasks.Load(fileName)
+	tasks, err := internal.Load(fileName)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
 	switch {
-	case *add:
-		tasks.Add(flag.Args())
-
-		err := tasks.Save(fileName)
+	case *add != "":
+		tasks.Add(*add)
+		err := internal.Save(fileName, tasks)
 		if err != nil {
 			log.Fatal(err)
 		}
 	case *list:
 		err := tasks.List() 
-		if err != nil {
-			log.Fatal(err)
-		}
-		
-		err = tasks.Save(fileName)
-		if err != nil {
+	 	if err != nil {
 			log.Fatal(err)
 		}
 	case *done > 0:
@@ -52,17 +48,17 @@ func main() {
 			log.Fatal(err)
 		}
 
-		err = tasks.Save(fileName)
+		err = internal.Save(fileName, tasks)
 		if err != nil {
 			log.Fatal(err)
 		}
-	case *remove > 0:
+	case *remove >= 0:
 		err := tasks.Remove(*remove)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		err = tasks.Save(fileName)
+		err = internal.Save(fileName, tasks)
 		if err != nil {
 			log.Fatal(err)
 		}

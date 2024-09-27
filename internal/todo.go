@@ -1,4 +1,4 @@
-package todo
+package internal
 
 import (
 	"encoding/json"
@@ -25,14 +25,15 @@ func (tl *TaskList) Add(title string) {
 
 func (tl *TaskList) List() error {
 	if len(*tl) == 0 {
-		return errors.New("No tasks")
+		println("No tasks to display")
+		os.Exit(0)
 	}
 	for i, task := range *tl {
 		check := " "
 		if task.Completed {
 			check = "X"
 		}
-		println(i+1, task.Title, check)
+		println(i+1, task.Title ,check)
 	}
 	return nil
 }
