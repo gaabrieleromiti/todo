@@ -3,6 +3,7 @@ package internal
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"slices"
 )
@@ -33,7 +34,7 @@ func (tl *TaskList) List() error {
 		if task.Completed {
 			check = "X"
 		}
-		println(i+1, task.Title ,check)
+		fmt.Printf("%d. [%s] %s\n", i+1, check, task.Title)
 	}
 	return nil
 }
